@@ -186,7 +186,7 @@ uint64_t dataOut;
     dataOut = dataOut << (64 - (startBit+bitLength));
     dataOut = dataOut >> (64 - bitLength);
   }
-  double returnData;
+  double returnData = 0;
   //Adjust if signed and scale and bias
   if(sign) {
     uint64_t maxVal = 1;
@@ -194,7 +194,7 @@ uint64_t dataOut;
       maxVal *= 2;
     }
     if(dataOut > (maxVal/2)) {
-      returnData = dataOut - maxVal;
+      returnData = (double) dataOut - maxVal;
       returnData = bias + (Scale * returnData);
     }
     else {

@@ -241,7 +241,7 @@ uint64_t dataOut;
       maxVal *= 2;
     }
     if(dataOut > (maxVal/2)) {
-      returnData = dataOut - maxVal;
+      returnData = (double) dataOut - maxVal;
       returnData = bias + (Scale * returnData);
     }
     else {
