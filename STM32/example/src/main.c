@@ -25,7 +25,7 @@
 //#define ADC
 #define ENCODER
 
-//#define CTRLS_USB
+#define CTRLS_USB
 
 #ifdef CTRLS_USB
   #include "drivers/uart.h"
