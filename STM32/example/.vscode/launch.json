@@ -1,0 +1,36 @@
+// AUTOMATICALLY GENERATED FILE. PLEASE DO NOT MODIFY IT MANUALLY
+
+// PIO Unified Debugger
+//
+// Documentation: https://docs.platformio.org/page/plus/debugging.html
+// Configuration: https://docs.platformio.org/page/projectconf/section_env_debug.html
+
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "platformio-debug",
+            "request": "launch",
+            "name": "PIO Debug",
+            "executable": "c:/Users/harry/Documents/Canbus-Message/STM32/example/.pio/build/genericSTM32F413RG/firmware.elf",
+            "projectEnvName": "genericSTM32F413RG",
+            "toolchainBinDir": "C:/Users/harry/.platformio/packages/toolchain-gccarmnoneeabi@1.70201.0/bin",
+            "svdPath": "C:/Users/harry/.platformio/platforms/ststm32/misc/svd/STM32F41x.svd",
+            "preLaunchTask": {
+                "type": "PlatformIO",
+                "task": "Pre-Debug"
+            },
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "platformio-debug",
+            "request": "launch",
+            "name": "PIO Debug (skip Pre-Debug)",
+            "executable": "c:/Users/harry/Documents/Canbus-Message/STM32/example/.pio/build/genericSTM32F413RG/firmware.elf",
+            "projectEnvName": "genericSTM32F413RG",
+            "toolchainBinDir": "C:/Users/harry/.platformio/packages/toolchain-gccarmnoneeabi@1.70201.0/bin",
+            "svdPath": "C:/Users/harry/.platformio/platforms/ststm32/misc/svd/STM32F41x.svd",
+            "internalConsoleOptions": "openOnSessionStart"
+        }
+    ]
+}

@@ -1,0 +1,47 @@
+//
+// !!! WARNING !!! AUTO-GENERATED FILE!
+// PLEASE DO NOT MODIFY IT AND USE "platformio.ini":
+// https://docs.platformio.org/page/projectconf/section_env_build.html#build-flags
+//
+{
+    "configurations": [
+        {
+            "name": "PlatformIO",
+            "includePath": [
+                "c:/Users/harry/Documents/Canbus-Message/STM32/example/include",
+                "c:/Users/harry/Documents/Canbus-Message/STM32/example/src",
+                "C:/Users/harry/.platformio/packages/tool-unity",
+                ""
+            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "path": [
+                    "c:/Users/harry/Documents/Canbus-Message/STM32/example/include",
+                    "c:/Users/harry/Documents/Canbus-Message/STM32/example/src",
+                    "C:/Users/harry/.platformio/packages/tool-unity",
+                    ""
+                ]
+            },
+            "defines": [
+                "F_CPU=100000000L",
+                "GENERIC_F4X3RX",
+                "PLATFORMIO=50100",
+                "STM32F413xx",
+                "STM32F4xx",
+                ""
+            ],
+            "cStandard": "c11",
+            "compilerPath": "C:/Users/harry/.platformio/packages/toolchain-gccarmnoneeabi@1.70201.0/bin/arm-none-eabi-gcc.exe",
+            "compilerArgs": [
+                "-mthumb",
+                "-mcpu=cortex-m4",
+                "-mfpu=fpv4-sp-d16",
+                "-mlittle-endian",
+                "-mthumb",
+                "-mcpu=cortex-m4",
+                ""
+            ]
+        }
+    ],
+    "version": 4
+}

@@ -1,6 +1,6 @@
 // ********************* Includes *********************
-#include "stm32f4xx.h"
 
+#include "config.h"
 #include "libc.h"
 
 #include "main_declarations.h"
@@ -22,8 +22,8 @@
 
 #define CAN CAN1
 
-//#define ADC
-#define ENCODER
+bool has_external_debug_serial = false;
+
 
 #define CTRLS_USB
 
@@ -141,6 +141,7 @@ uint8_t state = FAULT_STARTUP;
 const uint8_t crc_poly = 0xD5;  // standard crc8
 
 void CAN1_RX0_IRQ_Handler(void) {
+  //can receive interrupt handler
   while ((CAN->RF0R & CAN_RF0R_FMP0) != 0) {
     #ifdef DEBUG
       puts("CAN RX\n");
@@ -202,6 +203,7 @@ volatile bool oldbtns[4];
 int led_value = 0;
 
 void update_eon(void) {
+  //can send finction
   #ifdef DEBUG
     puth(TIM3->CNT);
     puts(" ");
@@ -242,22 +244,9 @@ void update_eon(void) {
   }
 }
 
-volatile uint8_t encoderCount = 2;
 
 void TIM3_IRQ_Handler(void) {
-  volatile static uint8_t ABs = 0;
-  ABs = (ABs << 2) & 0x0f; //left 2 bits now contain the previous AB key read-out;
-  ABs |= (get_gpio_input(GPIOA, 8) << 1) | get_gpio_input(GPIOA, 9);
-  encoderCount = 2;
-  switch (ABs)
-  {
-    case 0x0d:
-      encoderCount = 3;
-      break;
-    case 0x0e:
-      encoderCount = 1;
-      break;
-  }
+  //timer interrupt for periodic can messages for example
 }
 
 
@@ -265,58 +254,9 @@ void TIM3_IRQ_Handler(void) {
 
 void loop(void) {
   // read/write
+ // do things
+ // look in /include/drivers to see all the things you can do
 
-#ifdef ADC
-  uint32_t value;
-  value = adc_get(ADCCHAN_ACCEL0);
-  puth(value);
-  puts("\n");
-  if(value < 1) {
-    btns[2] = 1;
-    btns[3] = 0;
-  }
-  else if(value < 2 && value > 1) {
-    btns[2] = 1;
-    btns[3] = 0;
-  }
-  else if(value < 3 && value > 2) {
-    btns[2] = 1;
-    btns[3] = 0;
-  }
-#endif
-#ifdef ENCODER
-  switch (encoderCount) {
-    case 1:
-      btns[2] = 1;
-      btns[3] = 0;
-    case 2:
-      btns[2] = 0;
-      btns[3] = 0;
-    case 3:
-      btns[2] = 0;
-      btns[3] = 1;
-  }
-  btns[0] = get_gpio_input(GPIOA, 8);
-  btns[1] = get_gpio_input(GPIOA, 9);
-#else
-  btns[0] = get_gpio_input(GPIOA, 8);
-  btns[1] = get_gpio_input(GPIOA, 9);
-  btns[2] = get_gpio_input(GPIOA, 10);
-  btns[3] = get_gpio_input(GPIOC, 10);
-#endif
-
-  if(btns[0] && enabled && !oldbtns[0]){ //if set button pressed but system is already enabled
-    btns[0] = 0;
-    btns[1] = 1; //cancel instead
-  }
-  if(btns[0] != oldbtns[0] || btns[1] != oldbtns[1] || btns[2] != oldbtns[2] || btns[3] != oldbtns[3]) {//if button values have changed
-    update_eon(); //send new button values to eon
-  }
-
-  oldbtns[0] = btns[0];
-  oldbtns[1] = btns[1];
-  oldbtns[2] = btns[2];
-  oldbtns[3] = btns[3];
 
   // reset watchdog timer
 
@@ -332,9 +272,8 @@ int main(void) {
   REGISTER_INTERRUPT(CAN1_SCE_IRQn, CAN1_SCE_IRQ_Handler, CAN_INTERRUPT_RATE, FAULT_INTERRUPT_RATE_CAN_1)
 
   // Should run at around 732Hz (see init below)
-  #ifdef ENCODER
+
   REGISTER_INTERRUPT(TIM3_IRQn, TIM3_IRQ_Handler, 1000U, FAULT_INTERRUPT_RATE_TIM3)
-  #endif
 
   disable_interrupts();
 
@@ -349,9 +288,8 @@ int main(void) {
   usb_init();
 #endif
 
-#ifdef ADC
-  adc_init();
-#endif
+//f4 board doesn't have ADC pins exposed
+ // adc_init();
 
   // init can
   bool llcan_speed_set = llcan_set_speed(CAN1, 5000, false, false);
@@ -362,23 +300,19 @@ int main(void) {
   bool ret = llcan_init(CAN1);
   UNUSED(ret);
 
-  // 48mhz / 65536 ~= 732
-#ifdef ENCODER
+  // 48mhz / 65536 ~= 732 
+  // Timer interrupt
   timer_init(TIM3, 15);
   NVIC_EnableIRQ(TIM3_IRQn);
-#endif
-  btns[0] = 0;
-  btns[1] = 0;
-  btns[2] = 0;
-  btns[3] = 0;
-  
+
+
   update_eon();
   watchdog_init();
 
   puts("**** INTERRUPTS ON ****\n");
   enable_interrupts();
 
-  // main CTRLS loop
+  // main loop
   while (1) {
     loop();
   }
